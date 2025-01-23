@@ -1,0 +1,33 @@
+{
+  "name": "@bubblewrap/validator",
+  "version": "1.22.0",
+  "description": "Validate if an app using Trusted Web Activity fulfills the quality criteria",
+  "engines": {
+    "node": ">=14.15.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "del dist",
+    "lint": "eslint \"src/**/*.{js,ts}\"",
+    "test": "tsc && jasmine --config=jasmine.json"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/lib",
+    "dist/index.d.ts",
+    "dist/index.js"
+  ],
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GoogleChromeLabs/bubblewrap.git"
+  },
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@types/node-fetch": "^2.5.7",
+    "node-fetch": "^2.6.0"
+  },
+  "gitHead": "ba2a8430ee11d6bf650ed3d071c9c144fff31538"
+}
