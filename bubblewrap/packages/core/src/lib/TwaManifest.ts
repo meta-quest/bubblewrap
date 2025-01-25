@@ -42,7 +42,7 @@ const SHORT_NAME_MAX_SIZE = 12;
 const MIN_NOTIFICATION_ICON_SIZE = 48;
 
 // Supported display modes for TWA
-const DISPLAY_MODE_VALUES = ['standalone', 'fullscreen', 'fullscreen-sticky'];
+const DISPLAY_MODE_VALUES = ['standalone', 'minimal-ui', 'fullscreen', 'fullscreen-sticky'];
 export type DisplayMode = typeof DISPLAY_MODE_VALUES[number];
 export const DisplayModes: DisplayMode[] = [...DISPLAY_MODE_VALUES];
 
@@ -84,7 +84,7 @@ const DEFAULT_NAVIGATION_DIVIDER_COLOR = '#00000000';
 const DEFAULT_BACKGROUND_COLOR = '#FFFFFF';
 const DEFAULT_APP_VERSION_CODE = 1;
 const DEFAULT_APP_VERSION_NAME = DEFAULT_APP_VERSION_CODE.toString();
-const DEFAULT_MIN_SDK_VERSION = 19;
+const DEFAULT_MIN_SDK_VERSION = 21;
 const DEFAULT_SIGNING_KEY_PATH = './android.keystore';
 const DEFAULT_SIGNING_KEY_ALIAS = 'android';
 const DEFAULT_ENABLE_NOTIFICATIONS = true;
@@ -346,7 +346,7 @@ export class TwaManifest {
         webManifest['name']?.substring(0, SHORT_NAME_MAX_SIZE) || DEFAULT_APP_NAME,
       display: asDisplayMode(webManifest['display']!) || DEFAULT_DISPLAY_MODE,
       themeColor: webManifest['theme_color'] || DEFAULT_THEME_COLOR,
-      themeColorDark: DEFAULT_THEME_COLOR_DARK,
+      themeColorDark: webManifest['theme_color_dark'] || DEFAULT_THEME_COLOR_DARK,
       navigationColor: DEFAULT_NAVIGATION_COLOR,
       navigationColorDark: DEFAULT_NAVIGATION_COLOR,
       navigationDividerColor: DEFAULT_NAVIGATION_DIVIDER_COLOR,
@@ -522,6 +522,8 @@ export class TwaManifest {
           oldTwaManifest.fullScopeUrl?.toString(), fullScopeUrl.toString()),
       themeColor: this.getNewFieldValue('themeColor', fieldsToIgnore,
           oldTwaManifest.themeColor.hex(), webManifest['theme_color']!),
+      themeColorDark: this.getNewFieldValue('themeColorDark', fieldsToIgnore,
+          oldTwaManifest.themeColorDark.hex(), webManifest['theme_color_dark']!),
       backgroundColor: this.getNewFieldValue('backgroundColor', fieldsToIgnore,
           oldTwaManifest.backgroundColor.hex(), webManifest['background_color']!),
       startUrl: this.getNewFieldValue('startUrl', fieldsToIgnore, oldTwaManifest.startUrl,
