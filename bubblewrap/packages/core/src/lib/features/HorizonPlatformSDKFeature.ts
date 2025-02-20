@@ -16,9 +16,9 @@ export class HorizonPlatformSDKFeature extends EmptyFeature {
     this.delegationService.onCreate =
         'registerExtraCommandHandler(new PermissionRequestExtraCommandHandler());';
 
-    this.buildGradle.dependencies.push('com.meta.androidbrowserhelper:horizonplatformsdk:1.0.0');
+    this.buildGradle.dependencies.push('com.meta.androidbrowserhelper:horizonplatformsdk:1.1.0');
     this.delegationService.imports.push('com.meta.androidbrowserhelper.horizonplatformsdk.HorizonPlatformSdkRequestHandler');
     this.delegationService.onCreate +=
-        '\n            registerExtraCommandHandler(new HorizonPlatformSdkRequestHandler());';
+        '\n            registerExtraCommandHandler(new HorizonPlatformSdkRequestHandler(getApplicationContext()));';
   }
 }

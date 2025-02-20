@@ -202,6 +202,9 @@
                 <% if (horizonOSAppMode === 'immersive') { %>
                     <category android:name="com.oculus.intent.category.VR" />
                 <% } %>
+                <% if (horizonOSAppMode === '2d') { %>
+                    <category android:name="com.oculus.intent.category.2D" />
+                <% } %>
             </intent-filter>
 
             <intent-filter android:autoVerify="true">

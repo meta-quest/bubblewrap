@@ -39,6 +39,7 @@ type Messages = {
   errorInvalidOrientation: (orientation: string) => string;
   errorInvalidInteger: (integer: string) => string;
   errorInvalidSha256Fingerprint: (fingerprint: string) => string;
+  errorInvalidHorizonAppID: (id: string) => string;
   errorUrlMustBeImage: (mimeType: string) => string;
   errorSdkTerms: string;
   messageInitializingWebManifest: (manifestUrl: string) => string;
@@ -192,6 +193,9 @@ but received ${cyan(received.toString())}. Run ${cyan('bubblewrap help')} for us
   },
   errorInvalidSha256Fingerprint: (fingerprint: string): string => {
     return `Invalid SHA-256 fingerprint ${red(fingerprint)}.`;
+  },
+  errorInvalidHorizonAppID: (id: string): string => {
+    return `Invalid Horizon Application ID provided: ${id}`;
   },
   errorUrlMustBeImage: (mimeType: string): string => {
     return `URL must resolve to an image/* mime-type, but resolved to ${mimeType}.`;

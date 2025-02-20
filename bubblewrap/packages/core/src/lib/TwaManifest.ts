@@ -149,7 +149,7 @@ type alphaDependencies = {
  */
 export class TwaManifest {
   packageId: string;
-  applicationId: number;
+  applicationId: string;
   host: string;
   name: string;
   launcherName: string;
@@ -339,7 +339,7 @@ export class TwaManifest {
 
     const twaManifest = new TwaManifest({
       packageId: generatePackageId(webManifestUrl.host) || '',
-      applicationId: 0,
+      applicationId: '0',
       host: webManifestUrl.host,
       name: webManifest['name'] || webManifest['short_name'] || DEFAULT_APP_NAME,
       launcherName: webManifest['short_name'] ||
@@ -542,7 +542,7 @@ export class TwaManifest {
  */
 export interface TwaManifestJson {
   packageId: string;
-  applicationId: number;
+  applicationId: string;
   host: string;
   name: string;
   launcherName?: string; // Older Manifests may not have this field.

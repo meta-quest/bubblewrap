@@ -361,7 +361,7 @@ describe('TwaManifest', () => {
       };
       const twaManifest = new TwaManifest({
         'packageId': 'id',
-        'applicationId': 0,
+        'applicationId': '0',
         'host': 'host',
         'name': 'name',
         'launcherName': 'name',
@@ -425,7 +425,7 @@ describe('TwaManifest', () => {
       };
       const twaManifest = new TwaManifest({
         'packageId': 'id',
-        'applicationId': 0,
+        'applicationId': '0',
         'host': 'host',
         'name': 'name',
         'launcherName': 'name',

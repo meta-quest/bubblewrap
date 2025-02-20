@@ -21,7 +21,7 @@ import {Config, DisplayModes, HorizonOsAppModes, JdkHelper, KeyTool, Orientation
   from '@bubblewrap/core';
 import {validateHost, validateColor, createValidateString, validateDisplayMode, validatePackageId,
   validateImageUrl, validateOptionalImageUrl, validateInteger, validateOrientation,
-  validateHorizonOSAppMode
+  validateHorizonOSAppMode, validateHorizonAppID
 }
   from '../inputHelpers';
 import {APP_NAME} from '../constants';
@@ -171,7 +171,7 @@ async function confirmTwaConfig(twaManifest: TwaManifest, prompt: Prompt): Promi
       twaManifest.applicationId = await prompt.promptInput(
           messages.promptApplicationId,
           twaManifest.applicationId.toString(),
-          validateInteger,
+        validateHorizonAppID,
       );
       twaManifest.alphaDependencies = {
         enabled: true,
