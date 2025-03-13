@@ -89,7 +89,14 @@
         <% if (isMetaQuest && applicationId) { %>
             <meta-data
                 android:name="com.meta.horizon.platform.ovr.OCULUS_APP_ID"
-            android:value="\ <%= applicationId %>" />
+                android:value="\ <%= applicationId %>" />
+        <% } %>
+
+        <!-- This allows seamless AR to AR transitions -->
+        <% if (horizonOSAppMode === 'immersive') { %>
+             <meta-data
+                android:name="com.oculus.ossplash.background"
+                android:value="passthrough-contextual"/>
         <% } %>
 
         <% if (enableSiteSettingsShortcut) { %>
