@@ -34,8 +34,6 @@ export interface InitArgs {
   directory?: string;
   chromeosonly?: boolean;
   metaquest?: boolean;
-  // temporary flag to set 2D OS App Mode before the functionality is ready for use.
-  flat?: boolean;
   alphaDependencies?: boolean;
 }
 
@@ -181,6 +179,7 @@ async function confirmTwaConfig(twaManifest: TwaManifest, prompt: Prompt): Promi
         ...twaManifest.features,
         horizonBilling: {
           enabled: true,
+          horizonOSAppMode: twaManifest.horizonOSAppMode,
         },
       };
     }
@@ -298,17 +297,13 @@ export async function init(
     twaManifest.minSdkVersion = 23;
     // Warn about increasing the minimum Android API Level
     prompt.printMessage(messages.warnIncreasingMinSdkVersion);
-    if (args.flat){
-      // Temporary until 2d app mode is available in store
-      twaManifest.horizonOSAppMode = '2d';
-    } else {
-        twaManifest.horizonOSAppMode = await prompt.promptChoice(
-          messages.promptHorizonOSAppMode,
-          HorizonOsAppModes,
-          twaManifest.horizonOSAppMode,
-          validateHorizonOSAppMode,
-      );
-    }
+    twaManifest.horizonOSAppMode = await prompt.promptChoice(
+      messages.promptHorizonOSAppMode,
+      HorizonOsAppModes,
+      twaManifest.horizonOSAppMode,
+      validateHorizonOSAppMode,
+    );
+
     twaManifest.features = {
       ...twaManifest.features,
       horizonPlatformSDK: {

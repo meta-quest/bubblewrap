@@ -15,19 +15,23 @@
  *  limitations under the License.
  */
 
+import { HorizonOSAppMode } from '../TwaManifest';
 import {EmptyFeature} from './EmptyFeature';
 
 export type HorizonBillingConfig = {
     enabled: boolean;
+    horizonOSAppMode: HorizonOSAppMode;
 }
 
 export class HorizonBillingFeature extends EmptyFeature {
-  constructor() {
+    constructor(config: HorizonBillingConfig) {
     super('horizonbilling');
 
     this.buildGradle.dependencies.push('com.meta.androidbrowserhelper:horizonbilling:1.0.0-alpha11');
 
-    this.androidManifest.components.push(`
+        const category = config.horizonOSAppMode == '2D' ? '' : '<category android:name="com.oculus.intent.category.VR" />';
+
+        this.androidManifest.components.push(`
         <activity
             android:name="com.meta.androidbrowserhelper.horizonbilling.provider.PaymentActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
@@ -36,7 +40,7 @@ export class HorizonBillingFeature extends EmptyFeature {
 
             <intent-filter>
                 <action android:name="org.chromium.intent.action.PAY" />
-                <category android:name="com.oculus.intent.category.VR" />
+                ${category}
             </intent-filter>
 
             <meta-data

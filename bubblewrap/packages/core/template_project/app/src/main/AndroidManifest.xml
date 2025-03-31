@@ -162,7 +162,7 @@
                 <meta-data
                     android:name="horizonos.pwa.APP_MODE"
                     android:value="@string/horizonOSAppMode" />
-                <% if (horizonOSAppMode === '2d') { %>
+                <% if (horizonOSAppMode === '2D') { %>
                     <meta-data android:name="com.oculus.vrshell.uses_secure_layer"
                         android:value="secure"/>
                 <% } %>
@@ -209,7 +209,7 @@
                 <% if (horizonOSAppMode === 'immersive') { %>
                     <category android:name="com.oculus.intent.category.VR" />
                 <% } %>
-                <% if (horizonOSAppMode === '2d') { %>
+                <% if (horizonOSAppMode === '2D') { %>
                     <category android:name="com.oculus.intent.category.2D" />
                 <% } %>
             </intent-filter>

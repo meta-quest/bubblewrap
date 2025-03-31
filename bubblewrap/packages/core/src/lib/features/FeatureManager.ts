@@ -80,7 +80,7 @@ export class FeatureManager {
 
     if (twaManifest.features.horizonBilling?.enabled) {
       if (twaManifest.alphaDependencies?.enabled) {
-        this.addFeature(new HorizonBillingFeature());
+        this.addFeature(new HorizonBillingFeature(twaManifest.features.horizonBilling));
       } else {
         log.error('Skipping HorizonBillingFeature. '+
             'Enable alphaDependencies to add HorizonBillingFeature.');

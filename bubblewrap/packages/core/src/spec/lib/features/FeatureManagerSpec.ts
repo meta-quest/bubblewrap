@@ -20,7 +20,7 @@ import {AppsFlyerConfig, AppsFlyerFeature} from '../../../lib/features/AppsFlyer
 import {FirstRunFlagConfig, FirstRunFlagFeature} from '../../../lib/features/FirstRunFlagFeature';
 import {LocationDelegationFeature} from '../../../lib/features/LocationDelegationFeature';
 import {PlayBillingFeature} from '../../../lib/features/PlayBillingFeature';
-import {HorizonBillingFeature} from '../../../lib/features/HorizonBillingFeature';
+import { HorizonBillingConfig, HorizonBillingFeature } from '../../../lib/features/HorizonBillingFeature';
 import {TwaManifest} from '../../../lib/TwaManifest';
 import {Feature} from '../../../lib/features/Feature';
 
@@ -184,18 +184,20 @@ describe('FeatureManager', () => {
     });
 
     it('Enables the Horizon Billing feature', () => {
+      const horizonBillingConfig = {
+        enabled: true,
+        horizonOSAppMode: 'immersive',
+      } as HorizonBillingConfig;
       const manifest = {
         features: {
-          horizonBilling: {
-            enabled: true,
-          },
+          horizonBilling: horizonBillingConfig,
         },
         alphaDependencies: {
           enabled: true,
         },
       } as TwaManifest;
 
-      const horizonBillingFeature = new HorizonBillingFeature();
+      const horizonBillingFeature = new HorizonBillingFeature(horizonBillingConfig);
       const features = new FeatureManager(manifest);
 
       horizonBillingFeature.androidManifest.components.forEach((component) => {

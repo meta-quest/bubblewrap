@@ -65,7 +65,7 @@ export function asOrientation(input?: string): Orientation | null {
 }
 
 // Supported launch modes for TWA on Meta Quest
-const HORIZONOS_APP_MODE_VALUES = ['immersive'];
+const HORIZONOS_APP_MODE_VALUES = ['immersive', '2D'];
 export type HorizonOSAppMode = typeof HORIZONOS_APP_MODE_VALUES[number];
 export const HorizonOsAppModes: HorizonOSAppMode[] = [...HORIZONOS_APP_MODE_VALUES];
 
