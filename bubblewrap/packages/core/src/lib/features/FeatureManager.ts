@@ -25,6 +25,8 @@ import {TwaManifest} from '../TwaManifest';
 import {FirstRunFlagFeature} from './FirstRunFlagFeature';
 import {Log, ConsoleLog} from '../Log';
 import {ArCoreFeature} from './ArCoreFeature';
+import {ProtocolHandlersFeature} from './ProtocolHandlersFeature';
+import {FileHandlingFeature} from './FileHandlingFeature';
 
 const ANDROID_BROWSER_HELPER_VERSIONS = {
   stable: 'com.meta.androidbrowserhelper:androidbrowserhelper:2.5.0',
@@ -39,11 +41,13 @@ export class FeatureManager {
   buildGradle = {
     repositories: new Set<string>(),
     dependencies: new Set<string>(),
+    configs: new Set<string>(),
   };
   androidManifest = {
     permissions: new Set<string>(),
     components: new Array<string>(),
     applicationMetadata: new Array<Metadata>(),
+    launcherActivityEntries: new Array<string>(),
   };
   applicationClass = {
     imports: new Set<string>(),
@@ -70,12 +74,7 @@ export class FeatureManager {
     }
 
     if (twaManifest.features.playBilling?.enabled) {
-      if (twaManifest.alphaDependencies?.enabled) {
-        this.addFeature(new PlayBillingFeature());
-      } else {
-        log.error('Skipping PlayBillingFeature. '+
-            'Enable alphaDependencies to add PlayBillingFeature.');
-      }
+      this.addFeature(new PlayBillingFeature());
     }
 
     if (twaManifest.features.horizonBilling?.enabled) {
@@ -118,6 +117,14 @@ export class FeatureManager {
     if (twaManifest.enableNotifications) {
       this.androidManifest.permissions.add('android.permission.POST_NOTIFICATIONS');
     }
+
+    if (twaManifest.protocolHandlers) {
+      this.addFeature(new ProtocolHandlersFeature(twaManifest.protocolHandlers));
+    }
+
+    if (twaManifest.fileHandlers) {
+      this.addFeature(new FileHandlingFeature(twaManifest.fileHandlers));
+    }
   }
 
   private addFeature(feature: Feature): void {
@@ -128,6 +135,10 @@ export class FeatureManager {
 
     feature.buildGradle.dependencies.forEach((dep) => {
       this.buildGradle.dependencies.add(dep);
+    });
+
+    feature.buildGradle.configs.forEach((dep) => {
+      this.buildGradle.configs.add(dep);
     });
 
     // Adds properties to application.
@@ -152,6 +163,10 @@ export class FeatureManager {
 
     feature.androidManifest.applicationMetadata.forEach((metadata) => {
       this.androidManifest.applicationMetadata.push(metadata);
+    });
+
+    feature.androidManifest.launcherActivityEntries.forEach((entry) => {
+      this.androidManifest.launcherActivityEntries.push(entry);
     });
 
     // Adds properties to launcherActivity.

@@ -22,7 +22,13 @@ import {fetchUtils} from './FetchUtils';
 import {findSuitableIcon, generatePackageId, validateNotEmpty} from './util';
 import Color = require('color');
 import {ConsoleLog} from './Log';
-import {ShareTarget, WebManifestIcon, WebManifestJson} from './types/WebManifest';
+import {
+  ShareTarget,
+  WebManifestDisplayOverrideValue,
+  WebManifestIcon,
+  WebManifestJson,
+} from './types/WebManifest';
+import {processProtocolHandlers, ProtocolHandler} from './types/ProtocolHandler';
 import {ShortcutInfo} from './ShortcutInfo';
 import {AppsFlyerConfig} from './features/AppsFlyerFeature';
 import {LocationDelegationConfig} from './features/LocationDelegationFeature';
@@ -31,6 +37,7 @@ import {HorizonBillingConfig} from './features/HorizonBillingFeature';
 import {HorizonPlatformSDKConfig} from './features/HorizonPlatformSDKFeature';
 import {FirstRunFlagConfig} from './features/FirstRunFlagFeature';
 import {ArCoreConfig} from './features/ArCoreFeature';
+import {FileHandler, processFileHandlers} from './types/FileHandler';
 
 // The minimum size needed for the app icon.
 const MIN_ICON_SIZE = 512;
@@ -42,12 +49,27 @@ const SHORT_NAME_MAX_SIZE = 12;
 const MIN_NOTIFICATION_ICON_SIZE = 48;
 
 // Supported display modes for TWA
-const DISPLAY_MODE_VALUES = ['standalone', 'minimal-ui', 'fullscreen', 'fullscreen-sticky'];
+const DISPLAY_MODE_VALUES = ['standalone', 'minimal-ui', 'fullscreen', 'fullscreen-sticky',
+  'browser'];
 export type DisplayMode = typeof DISPLAY_MODE_VALUES[number];
 export const DisplayModes: DisplayMode[] = [...DISPLAY_MODE_VALUES];
 
 export function asDisplayMode(input: string): DisplayMode | null {
   return DISPLAY_MODE_VALUES.includes(input) ? input as DisplayMode : null;
+}
+
+// Supported display overrides for TWA
+export type DisplayOverrideValue = WebManifestDisplayOverrideValue | 'fullscreen-sticky';
+export const DisplayOverrideValues: DisplayOverrideValue[] = ['standalone', 'minimal-ui',
+  'fullscreen', 'fullscreen-sticky', 'browser', 'window-controls-overlay', 'tabbed'];
+
+export function resolveDisplayOverride(
+    displayOverride: WebManifestDisplayOverrideValue[]|undefined,
+): DisplayOverrideValue[] {
+  if (!displayOverride) return [];
+
+  return displayOverride.filter(
+      (displayOverrideValue) => DisplayOverrideValues.includes(displayOverrideValue));
 }
 
 // Possible values for screen orientation, as defined in `android-browser-helper`:
@@ -154,6 +176,7 @@ export class TwaManifest {
   name: string;
   launcherName: string;
   display: DisplayMode;
+  displayOverride: DisplayOverrideValue[];
   themeColor: Color;
   themeColorDark: Color;
   navigationColor: Color;
@@ -190,6 +213,9 @@ export class TwaManifest {
   serviceAccountJsonFile: string | undefined;
   additionalTrustedOrigins: string[];
   retainedBundles: number[];
+  protocolHandlers?: ProtocolHandler[];
+  fileHandlers?: FileHandler[];
+  launchHandlerClientMode?: string;
 
   private static log = new ConsoleLog('twa-manifest');
 
@@ -244,6 +270,10 @@ export class TwaManifest {
     this.serviceAccountJsonFile = data.serviceAccountJsonFile;
     this.additionalTrustedOrigins = data.additionalTrustedOrigins || [];
     this.retainedBundles = data.retainedBundles || [];
+    this.protocolHandlers = data.protocolHandlers;
+    this.fileHandlers = data.fileHandlers;
+    this.launchHandlerClientMode = data.launchHandlerClientMode;
+    this.displayOverride = data.displayOverride || [];
   }
 
   /**
@@ -337,6 +367,18 @@ export class TwaManifest {
       return icon ? new URL(icon.src, webManifestUrl).toString() : undefined;
     }
 
+    const processedProtocolHandlers = processProtocolHandlers(
+        webManifest.protocol_handlers ?? [],
+        fullStartUrl,
+        fullScopeUrl,
+    );
+
+    const fileHandlers = processFileHandlers(
+        webManifest.file_handlers ?? [],
+        fullStartUrl,
+        fullScopeUrl,
+    );
+
     const twaManifest = new TwaManifest({
       packageId: generatePackageId(webManifestUrl.host) || '',
       applicationId: '0',
@@ -345,6 +387,7 @@ export class TwaManifest {
       launcherName: webManifest['short_name'] ||
         webManifest['name']?.substring(0, SHORT_NAME_MAX_SIZE) || DEFAULT_APP_NAME,
       display: asDisplayMode(webManifest['display']!) || DEFAULT_DISPLAY_MODE,
+      displayOverride: resolveDisplayOverride(webManifest['display_override']),
       themeColor: webManifest['theme_color'] || DEFAULT_THEME_COLOR,
       themeColorDark: webManifest['theme_color_dark'] || DEFAULT_THEME_COLOR_DARK,
       navigationColor: DEFAULT_NAVIGATION_COLOR,
@@ -369,6 +412,9 @@ export class TwaManifest {
       shareTarget: TwaManifest.verifyShareTarget(webManifestUrl, webManifest.share_target),
       orientation: asOrientation(webManifest.orientation) || DEFAULT_ORIENTATION,
       fullScopeUrl: fullScopeUrl.toString(),
+      protocolHandlers: processedProtocolHandlers,
+      fileHandlers,
+      launchHandlerClientMode: webManifest['launch_handler']?.['client_mode'] || '',
       additionalTrustedOrigins: webManifest.additional_trusted_origins || [],
     });
     return twaManifest;
@@ -506,8 +552,33 @@ export class TwaManifest {
         oldTwaManifestJson.iconUrl!, webManifest.icons!, 'monochrome', MIN_NOTIFICATION_ICON_SIZE,
         webManifestUrl);
 
+    const protocolHandlersMap = new Map<string, string>();
+    for (const handler of oldTwaManifest.protocolHandlers ?? []) {
+      protocolHandlersMap.set(handler.protocol, handler.url);
+    }
+    if (!(fieldsToIgnore.includes('protocol_handlers'))) {
+      for (const handler of webManifest.protocol_handlers ?? []) {
+        protocolHandlersMap.set(handler.protocol, handler.url);
+      };
+    }
+    const protocolHandlers = Array.from(protocolHandlersMap.entries()).map(([protocol, url]) => {
+      return {protocol, url} as ProtocolHandler;
+    });
+
     const fullStartUrl: URL = new URL(webManifest['start_url'] || '/', webManifestUrl);
     const fullScopeUrl: URL = new URL(webManifest['scope'] || '.', webManifestUrl);
+
+    let fileHandlers = oldTwaManifestJson.fileHandlers;
+    if (!(fieldsToIgnore.includes('file_handlers'))) {
+      fileHandlers = processFileHandlers(
+          webManifest.file_handlers ?? [],
+          fullStartUrl,
+          fullScopeUrl,
+      );
+      if (fileHandlers.length == 0) {
+        fileHandlers = oldTwaManifestJson.fileHandlers;
+      }
+    }
 
     const twaManifest = new TwaManifest({
       ...oldTwaManifestJson,
@@ -518,6 +589,8 @@ export class TwaManifest {
           webManifest['name']?.substring(0, SHORT_NAME_MAX_SIZE)),
       display: this.getNewFieldValue('display', fieldsToIgnore, oldTwaManifest.display,
           asDisplayMode(webManifest['display']!)!),
+      displayOverride: this.getNewFieldValue('displayOverride', fieldsToIgnore,
+          oldTwaManifest.displayOverride, resolveDisplayOverride(webManifest['display_override'])),
       fullScopeUrl: this.getNewFieldValue('fullScopeUrl', fieldsToIgnore,
           oldTwaManifest.fullScopeUrl?.toString(), fullScopeUrl.toString()),
       themeColor: this.getNewFieldValue('themeColor', fieldsToIgnore,
@@ -532,6 +605,11 @@ export class TwaManifest {
       maskableIconUrl: maskableIconUrl || oldTwaManifestJson.maskableIconUrl,
       monochromeIconUrl: monochromeIconUrl || oldTwaManifestJson.monochromeIconUrl,
       shortcuts: shortcuts,
+      protocolHandlers: protocolHandlers,
+      fileHandlers,
+      launchHandlerClientMode: this.getNewFieldValue('launchHandlerClientMode', fieldsToIgnore,
+          oldTwaManifest.launchHandlerClientMode,
+          webManifest['launch_handler']?.['client_mode'] || ''),
     });
     return twaManifest;
   }
@@ -547,6 +625,7 @@ export interface TwaManifestJson {
   name: string;
   launcherName?: string; // Older Manifests may not have this field.
   display?: string; // Older Manifests may not have this field.
+  displayOverride?: DisplayOverrideValue[];
   themeColor: string;
   themeColorDark?: string;
   navigationColor: string;
@@ -593,6 +672,9 @@ export interface TwaManifestJson {
   serviceAccountJsonFile?: string;
   additionalTrustedOrigins?: string[];
   retainedBundles?: number[];
+  protocolHandlers?: ProtocolHandler[];
+  fileHandlers?: FileHandler[];
+  launchHandlerClientMode?: string;
 }
 
 export interface SigningKeyInfo {

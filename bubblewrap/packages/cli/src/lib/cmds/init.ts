@@ -152,10 +152,6 @@ async function confirmTwaConfig(twaManifest: TwaManifest, prompt: Prompt): Promi
   if (!twaManifest.isMetaQuest) {
     const playBillingEnabled = await prompt.promptConfirm(messages.promptPlayBilling, false);
     if (playBillingEnabled) {
-      twaManifest.alphaDependencies = {
-        enabled: true,
-      };
-
       twaManifest.features = {
         ...twaManifest.features,
         playBilling: {

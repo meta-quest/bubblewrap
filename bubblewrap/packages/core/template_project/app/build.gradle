@@ -55,7 +55,7 @@ android {
     <% if (isMetaQuest) { %>
         compileSdkVersion 32
     <% } else { %>
-        compileSdkVersion 35
+        compileSdkVersion 36
     <% } %>
     namespace "<%= packageId %>"
     defaultConfig {
@@ -78,6 +78,10 @@ android {
         // The URL that will be used when launching the TWA from the Android Launcher
         def launchUrl = "https://" + twaManifest.hostName + twaManifest.launchUrl
         resValue "string", "launchUrl", launchUrl
+
+        <% if (launchHandlerClientMode) { %>
+            resValue "string", "launchHandlerClientMode", '<%= launchHandlerClientMode %>'
+        <% } %>
 
         <% if (webManifestUrl) { %>
             // The URL the Web Manifest for the Progressive Web App that the TWA points to. This
@@ -162,6 +166,10 @@ android {
 
         resValue "bool", "enableSiteSettingsShortcut", twaManifest.enableSiteSettingsShortcut
         resValue "string", "orientation", twaManifest.orientation
+
+        <% for(const config of buildGradle.configs) { %>
+        <%= config %>
+        <% } %>
     }
     buildTypes {
         release {

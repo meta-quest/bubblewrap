@@ -100,10 +100,17 @@
         <% } %>
 
         <% if (enableSiteSettingsShortcut) { %>
-            <activity android:name="com.meta.androidbrowserhelper.trusted.ManageDataLauncherActivity">
-            <meta-data
-                android:name="android.support.customtabs.trusted.MANAGE_SPACE_URL"
-                android:value="@string/launchUrl" />
+            <activity android:name="com.meta.androidbrowserhelper.trusted.ManageDataLauncherActivity"
+                android:exported="false"
+                android:enabled="true"
+                android:excludeFromRecents="true">
+                <meta-data
+                    android:name="android.support.customtabs.trusted.MANAGE_SPACE_URL"
+                    android:value="@string/launchUrl" />
+                <intent-filter>
+                    <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                </intent-filter>
             </activity>
         <% } %>
 
@@ -120,6 +127,12 @@
             <meta-data
                 android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR"
                 android:resource="@color/colorPrimary" />
+
+            <% if (launchHandlerClientMode) { %>
+                <meta-data
+                    android:name="android.support.customtabs.trusted.LAUNCH_HANDLER_CLIENT_MODE"
+                    android:value="@string/launchHandlerClientMode" />
+            <% } %>
 
             <meta-data
                 android:name="android.support.customtabs.trusted.STATUS_BAR_COLOR_DARK"
@@ -180,6 +193,12 @@
             <% } else if (display === 'fullscreen-sticky') { %>
             <meta-data android:name="android.support.customtabs.trusted.DISPLAY_MODE"
                 android:value="sticky-immersive" />
+            <% } else if (display === 'minimal-ui') { %>
+            <meta-data android:name="android.support.customtabs.trusted.DISPLAY_MODE"
+                android:value="minimal-ui" />
+            <% } else if (display === 'browser') { %>
+            <meta-data android:name="android.support.customtabs.trusted.DISPLAY_MODE"
+                android:value="browser" />
             <% } %>
 
             <meta-data android:name="android.support.customtabs.trusted.SCREEN_ORIENTATION"
@@ -189,6 +208,12 @@
                 <meta-data
                     android:name="android.support.customtabs.trusted.ADDITIONAL_TRUSTED_ORIGINS"
                     android:resource="@array/additional_trusted_origins" />
+            <% } %>
+
+            <% if (displayOverride.length > 0) { %>
+                <meta-data
+                    android:name="android.support.customtabs.trusted.DISPLAY_OVERRIDE"
+                    android:resource="@array/display_override" />
             <% } %>
 
             <% if (shareTargetIntentFilter) { %>
@@ -234,6 +259,10 @@
                     <data android:scheme="https"
                         android:host="<%= additionalOrigin %>"/>
                 </intent-filter>
+            <% } %>
+
+            <% for(const entry of androidManifest.launcherActivityEntries) { %>
+                <%= entry %>
             <% } %>
         </activity>
 

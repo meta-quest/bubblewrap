@@ -14,7 +14,12 @@
  *  limitations under the License.
  */
 
-import {TwaManifest, TwaManifestJson, asDisplayMode} from '../../lib/TwaManifest';
+import {
+  TwaManifest,
+  TwaManifestJson,
+  asDisplayMode,
+  resolveDisplayOverride,
+} from '../../lib/TwaManifest';
 import {WebManifestJson} from '../../lib/types/WebManifest';
 import Color = require('color');
 import {ShortcutInfo} from '../../lib/ShortcutInfo';
@@ -47,6 +52,13 @@ describe('TwaManifest', () => {
             'src': '/shortcut_icon.png',
             'sizes': '96x96',
           }],
+        }],
+        'file_handlers': [{
+          'action': '/',
+          'accept': {
+            'text/plain': ['.txt'],
+            'image/jpeg': ['.jpg', 'jpeg'],
+          },
         }],
       };
       const manifestUrl = new URL('https://pwa-directory.com/manifest.json');
@@ -85,6 +97,12 @@ describe('TwaManifest', () => {
           .toBe('[[name:\'shortcut name\', short_name:\'short\',' +
             ' url:\'https://pwa-directory.com/launch\', icon:\'shortcut_0\']]');
       expect(twaManifest.fallbackType).toBe('customtabs');
+      expect(twaManifest.fileHandlers).toEqual([
+        {
+          'actionUrl': 'https://pwa-directory.com/',
+          'mimeTypes': ['text/plain', 'image/jpeg'],
+        },
+      ]);
     });
 
     it('Sets correct defaults for unavailable fields', () => {
@@ -184,11 +202,6 @@ describe('TwaManifest', () => {
       expect(twaManifest.monochromeIconUrl).toBe('https://pwa-directory.com/favicons/monochrome.png');
     });
 
-    it('Replaces unsupported display modes with `standalone`', () => {
-      const manifestUrl = new URL('https://pwa-directory.com/manifest.json');
-      expect(TwaManifest.fromWebManifestJson(manifestUrl, {display: 'browser'}).display)
-          .toBe('standalone');
-    });
   });
 
   describe('#constructor', () => {
@@ -201,6 +214,7 @@ describe('TwaManifest', () => {
         startUrl: '/',
         iconUrl: 'https://pwa-directory.com/favicons/android-chrome-512x512.png',
         display: 'fullscreen',
+        displayOverride: ['window-controls-overlay'],
         orientation: 'landscape',
         themeColor: '#00ff00',
         themeColorDark: '#000000',
@@ -238,6 +252,7 @@ describe('TwaManifest', () => {
       expect(twaManifest.startUrl).toEqual(twaManifest.startUrl);
       expect(twaManifest.iconUrl).toEqual(twaManifest.iconUrl);
       expect(twaManifest.display).toEqual('fullscreen');
+      expect(twaManifest.displayOverride).toEqual(['window-controls-overlay']);
       expect(twaManifest.orientation).toEqual('landscape');
       expect(twaManifest.themeColor).toEqual(new Color('#00ff00'));
       expect(twaManifest.themeColorDark).toEqual(new Color('#000000'));
@@ -336,14 +351,47 @@ describe('TwaManifest', () => {
       expect(asDisplayMode('standalone')).toBe('standalone');
       expect(asDisplayMode('fullscreen')).toBe('fullscreen');
       expect(asDisplayMode('minimal-ui')).toBe('minimal-ui');
+      expect(asDisplayMode('browser')).toBe('browser');
     });
 
     it('Returns null for unsupported display modes', () => {
-      expect(asDisplayMode('browser')).toBeNull();
       expect(asDisplayMode('bogus')).toBeNull();
       expect(asDisplayMode('')).toBeNull();
     });
   });
+
+  describe('#resolveDisplayOverride', () => {
+    it('Keeps display override values that are supported', () => {
+      expect(resolveDisplayOverride([
+        'browser',
+        'fullscreen',
+        'minimal-ui',
+        'standalone',
+        'window-controls-overlay',
+        'tabbed',
+      ])).toEqual([
+        'browser',
+        'fullscreen',
+        'minimal-ui',
+        'standalone',
+        'window-controls-overlay',
+        'tabbed',
+      ]);
+    });
+
+    it('Ignore unsupported values', () => {
+      expect(resolveDisplayOverride([
+        'browser',
+        // @ts-expect-error Unsupported value for testing
+        'not-supported',
+      ])).toEqual(['browser']);
+      expect(resolveDisplayOverride([
+        // @ts-expect-error Unsupported value for testing
+        'not-supported',
+      ])).toEqual([]);
+    });
+  });
+
   describe('#merge', () => {
     it('Validates that the merge is done correctly in case which' +
         ' there are no fields to ignore', async () => {
@@ -358,14 +406,27 @@ describe('TwaManifest', () => {
           'purpose': 'any',
         },
         ],
+        'protocol_handlers': [{
+          'protocol': 'web+test-replace',
+          'url': 'test-format-web/%s',
+        }],
+        'file_handlers': [{
+          'action': '/',
+          'accept': {
+            'text/plain': ['.txt'],
+            'image/jpeg': ['.jpg', 'jpeg'],
+          },
+        }],
       };
       const twaManifest = new TwaManifest({
         'packageId': 'id',
+        'launchHandlerClientMode': 'navigate_existing',
         'applicationId': '0',
         'host': 'host',
         'name': 'name',
         'launcherName': 'name',
         'display': 'standalone',
+        'displayOverride': ['window-controls-overlay'],
         'themeColor': '#FFFFFF',
         'themeColorDark': '#000000',
         'navigationColor': '#000000',
@@ -397,12 +458,39 @@ describe('TwaManifest', () => {
         'fullScopeUrl': 'https://name.github.io/',
         'appVersion': '1',
         'serviceAccountJsonFile': '/home/service-account.json',
+        'protocolHandlers': [
+          {
+            'protocol': 'web+test-replace',
+            'url': 'test-format-twa/%s',
+          },
+          {
+            'protocol': 'web+test-keep',
+            'url': 'test-format-twa/%s',
+          },
+        ],
       });
       // The versions shouldn't change because the update happens in `cli`.
       const expectedTwaManifest = new TwaManifest({
         ...twaManifest.toJson(),
         'launcherName': 'different_name',
         'display': 'fullscreen',
+        'displayOverride': [],
+        'protocolHandlers': [
+          {
+            'protocol': 'web+test-replace',
+            'url': 'test-format-web/%s',
+          },
+          {
+            'protocol': 'web+test-keep',
+            'url': 'test-format-twa/%s',
+          },
+        ],
+        'fileHandlers': [
+          {
+            'actionUrl': 'https://name.github.io/',
+            'mimeTypes': ['text/plain', 'image/jpeg'],
+          },
+        ],
       });
       // A URL to insert as the webManifestUrl.
       const url = new URL('https://name.github.io/manifest.json');
@@ -422,9 +510,14 @@ describe('TwaManifest', () => {
           'purpose': 'any',
         },
         ],
+        'protocol_handlers': [{
+          'protocol': 'web+test-replace',
+          'url': 'test-format-web/%s',
+        }],
       };
       const twaManifest = new TwaManifest({
         'packageId': 'id',
+        'launchHandlerClientMode': 'navigate_existing',
         'applicationId': '0',
         'host': 'host',
         'name': 'name',
@@ -461,13 +554,27 @@ describe('TwaManifest', () => {
         'fullScopeUrl': 'https://name.github.io/',
         'appVersion': '1',
         'serviceAccountJsonFile': '/home/service-account.json',
+        'protocolHandlers': [
+          {
+            'protocol': 'web+test-replace',
+            'url': 'test-format-twa/%s',
+          },
+          {
+            'protocol': 'web+test-keep',
+            'url': 'test-format-twa/%s',
+          },
+        ],
       });
       // The versions shouldn't change because the update happens in `cli`.
       const expectedTwaManifest = twaManifest;
       // A URL to insert as the webManifestUrl.
       const url = new URL('https://name.github.io/manifest.json');
-      expect(await TwaManifest.merge(['short_name', 'display'], url, webManifest, twaManifest))
-          .toEqual(expectedTwaManifest);
+      expect(await TwaManifest.merge(
+          ['short_name', 'display', 'protocol_handlers'],
+          url,
+          webManifest,
+          twaManifest,
+      )).toEqual(expectedTwaManifest);
     });
   });
 });

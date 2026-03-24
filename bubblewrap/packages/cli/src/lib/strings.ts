@@ -25,7 +25,6 @@ type Messages = {
   errorFailedToRunQualityCriteria: string;
   errorIconUrlMustExist: (manifest: string) => string;
   errorPlayBillingEnableNotifications: string;
-  errorPlayBillingAlphaDependencies: string;
   errorHorizonBillingEnableNotifications: string;
   errorHorizonBillingAlphaDependencies: string;
   errorMaxLength: (maxLength: number, actualLength: number) => string;
@@ -158,8 +157,6 @@ export const enUS: Messages = {
       yellow('\nFailed to run the PWA Quality Criteria checks. Skipping.'),
   errorPlayBillingEnableNotifications: red(`Play Billing requires ${cyan('enableNotifications')} ` +
       `to be ${cyan('true')}.`),
-  errorPlayBillingAlphaDependencies: red(`Play Billing requires ${cyan('alphaDependencies')} ` +
-      'to be enabled.'),
   errorHorizonBillingEnableNotifications: red(`Horizon Billing requires ${cyan('enableNotifications')} ` +
       `to be ${cyan('true')}.`),
   errorHorizonBillingAlphaDependencies: red(`Horizon Billing requires ${cyan('alphaDependencies')} ` +
@@ -387,7 +384,7 @@ the PWA:
   promptMaskableIconUrl: 'Maskable icon URL:',
   promptMonochromeIconUrl: 'Monochrome icon URL:',
   promptShortcuts: 'Include app shortcuts?',
-  promptPlayBilling: 'Include support for Play Billing (this relies on alpha dependencies)?',
+  promptPlayBilling: 'Include support for Play Billing?',
   promptHorizonBilling: 'Include support for Horizon Billing (this relies on alpha dependencies)?',
   promptLocationDelegation: 'Request geolocation permission?',
   promptPackageId: 'Application ID:',

@@ -15,6 +15,9 @@
  *  limitations under the License.
  */
 
+import {FileHandlerJson} from './FileHandler';
+import {ProtocolHandler} from './ProtocolHandler';
+
 export interface WebManifestIcon {
   src: string;
   sizes?: string;
@@ -31,6 +34,9 @@ export interface WebManifestShortcutJson {
 }
 
 type WebManifestDisplayMode = 'browser' | 'minimal-ui' | 'standalone' | 'fullscreen';
+
+export type WebManifestDisplayOverrideValue = 'window-controls-overlay' | 'tabbed' | 'browser' |
+    'minimal-ui' | 'standalone' | 'fullscreen';
 
 export type OrientationLock = 'any' | 'natural' | 'landscape'| 'portrait' | 'portrait-primary'|
     'portrait-secondary' | 'landscape-primary' | 'landscape-secondary';
@@ -68,5 +74,11 @@ export interface WebManifestJson {
   shortcuts?: Array<WebManifestShortcutJson>;
   share_target?: ShareTarget;
   orientation?: OrientationLock;
+  display_override?: WebManifestDisplayOverrideValue[];
+  protocol_handlers?: Array<ProtocolHandler>;
+  file_handlers?: Array<FileHandlerJson>;
+  launch_handler?: {
+    client_mode?: string;
+  };
   additional_trusted_origins?: string[];
 }
