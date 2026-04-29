@@ -1,5 +1,5 @@
 {
-  "name": "@bubblewrap/core",
+  "name": "@meta-quest/bubblewrap-core",
   "version": "1.24.1",
   "description": "Core Library to generate, build and sign TWA projects",
   "engines": {
@@ -28,7 +28,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GoogleChromeLabs/bubblewrap.git"
+    "url": "git+https://github.com/meta-quest/bubblewrap.git"
   },
   "author": "",
   "license": "Apache-2.0",

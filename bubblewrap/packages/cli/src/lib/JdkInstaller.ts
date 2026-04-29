@@ -15,7 +15,7 @@
  */
 
 import * as path from 'path';
-import {util} from '@bubblewrap/core';
+import {util} from '@meta-quest/bubblewrap-core';
 import {Prompt} from './Prompt';
 import {enUS as messages} from './strings';
 

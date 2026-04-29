@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {Result} from '@bubblewrap/core';
+import {Result} from '@meta-quest/bubblewrap-core';
 import {MockPrompt} from './mock/MockPrompt';
 
 async function validationFunction(message: string): Promise<Result<string, Error>> {

@@ -15,7 +15,7 @@
  */
 
 import type {ParsedArgs} from 'minimist';
-import {GooglePlay, TwaManifest, asPlayStoreTrack} from '@bubblewrap/core';
+import {GooglePlay, TwaManifest, asPlayStoreTrack} from '@meta-quest/bubblewrap-core';
 import * as fs from 'fs';
 import * as path from 'path';
 import {TWA_MANIFEST_FILE_NAME} from '../constants';

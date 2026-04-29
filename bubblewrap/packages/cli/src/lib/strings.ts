@@ -15,7 +15,7 @@
  *  limitations under the License.
  */
 
-import {Fingerprint} from '@bubblewrap/core';
+import {Fingerprint} from '@meta-quest/bubblewrap-core';
 import {cyan, green, underline, bold, italic, red, yellow} from 'colors';
 
 type Messages = {

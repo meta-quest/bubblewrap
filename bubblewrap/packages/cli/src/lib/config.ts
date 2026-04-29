@@ -17,7 +17,7 @@
 
 import {join} from 'path';
 import {homedir} from 'os';
-import {Config, Log, ConsoleLog, JdkHelper, AndroidSdkTools} from '@bubblewrap/core';
+import {Config, Log, ConsoleLog, JdkHelper, AndroidSdkTools} from '@meta-quest/bubblewrap-core';
 import {JdkInstaller} from './JdkInstaller';
 import {AndroidSdkToolsInstaller} from './AndroidSdkToolsInstaller';
 import {existsSync} from 'fs';

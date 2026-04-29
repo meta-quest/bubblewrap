@@ -15,7 +15,7 @@
  */
 
 import mock from 'mock-fs';
-import {MockLog} from '@bubblewrap/core';
+import {MockLog} from '@meta-quest/bubblewrap-core';
 import {doctor} from '../lib/cmds/doctor';
 import {enUS as messages} from '../lib/strings';
 

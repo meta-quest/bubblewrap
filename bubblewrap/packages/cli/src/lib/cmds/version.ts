@@ -16,7 +16,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {Log, ConsoleLog} from '@bubblewrap/core';
+import {Log, ConsoleLog} from '@meta-quest/bubblewrap-core';
 
 export async function version(log: Log = new ConsoleLog('version')): Promise<boolean> {
   const packageJsonFile = path.join(__dirname, '../../../package.json');

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {Config, Log, ConsoleLog} from '@bubblewrap/core';
+import {Config, Log, ConsoleLog} from '@meta-quest/bubblewrap-core';
 import {ParsedArgs} from 'minimist';
 import {existsSync} from 'fs';
 import {loadOrCreateConfig} from '../config';

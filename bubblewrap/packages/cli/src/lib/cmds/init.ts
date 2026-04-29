@@ -18,7 +18,7 @@
 import * as fs from 'fs';
 import {join, resolve} from 'path';
 import {Config, DisplayModes, HorizonOsAppModes, JdkHelper, KeyTool, Orientations, TwaGenerator, TwaManifest}
-  from '@bubblewrap/core';
+  from '@meta-quest/bubblewrap-core';
 import {validateHost, validateColor, createValidateString, validateDisplayMode, validatePackageId,
   validateImageUrl, validateOptionalImageUrl, validateInteger, validateOrientation,
   validateHorizonOSAppMode, validateHorizonAppID

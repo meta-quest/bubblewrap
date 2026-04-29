@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {Log, ConsoleLog} from '@bubblewrap/core';
+import {Log, ConsoleLog} from '@meta-quest/bubblewrap-core';
 import {ParsedArgs} from 'minimist';
 import {enUS as messages} from '../strings';
 

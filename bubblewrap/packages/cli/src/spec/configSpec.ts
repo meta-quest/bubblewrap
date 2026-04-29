@@ -19,7 +19,7 @@ import {homedir} from 'os';
 import {existsSync} from 'fs';
 import {promises as fsPromises} from 'fs';
 import {loadOrCreateConfig} from '../lib/config';
-import {MockLog, JdkHelper, Result, AndroidSdkTools} from '@bubblewrap/core';
+import {MockLog, JdkHelper, Result, AndroidSdkTools} from '@meta-quest/bubblewrap-core';
 import mock from 'mock-fs';
 import {MockPrompt} from './mock/MockPrompt';
 

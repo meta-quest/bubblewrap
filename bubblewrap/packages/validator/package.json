@@ -1,5 +1,5 @@
 {
-  "name": "@bubblewrap/validator",
+  "name": "@meta-quest/bubblewrap-validator",
   "version": "1.22.0",
   "description": "Validate if an app using Trusted Web Activity fulfills the quality criteria",
   "engines": {
@@ -21,7 +21,7 @@
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GoogleChromeLabs/bubblewrap.git"
+    "url": "git+https://github.com/meta-quest/bubblewrap.git"
   },
   "author": "",
   "license": "Apache-2.0",

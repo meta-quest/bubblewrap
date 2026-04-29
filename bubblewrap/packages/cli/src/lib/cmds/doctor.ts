@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {ConsoleLog, Log, Config, AndroidSdkTools, JdkHelper} from '@bubblewrap/core';
+import {ConsoleLog, Log, Config, AndroidSdkTools, JdkHelper} from '@meta-quest/bubblewrap-core';
 import {loadOrCreateConfig} from '../config';
 import {enUS as messages} from '../strings';
 

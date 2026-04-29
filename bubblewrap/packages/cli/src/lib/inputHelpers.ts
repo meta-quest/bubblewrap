@@ -19,7 +19,7 @@ import Color from 'color';
 import {URL} from 'url';
 import {isWebUri} from 'valid-url';
 import {Result, DisplayMode, asDisplayMode, asOrientation, Orientation, util, HorizonOSAppMode,
-  asHorizonOSAppMode} from '@bubblewrap/core';
+  asHorizonOSAppMode} from '@meta-quest/bubblewrap-core';
 import {ValidateFunction} from './Prompt';
 import {enUS as messages} from './strings';
 import {domainToASCII} from 'url';

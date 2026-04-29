@@ -14,8 +14,8 @@
  *  limitations under the License.
  */
 
-import {PwaValidator} from '@bubblewrap/validator';
-import {ConsoleLog} from '@bubblewrap/core';
+import {PwaValidator} from '@meta-quest/bubblewrap-validator';
+import {ConsoleLog} from '@meta-quest/bubblewrap-core';
 import {ParsedArgs} from 'minimist';
 import {printValidationResult} from '../pwaValidationHelper';
 

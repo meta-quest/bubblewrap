@@ -1,5 +1,5 @@
 {
-  "name": "@bubblewrap/cli",
+  "name": "@meta-quest/bubblewrap-cli",
   "version": "1.24.1",
   "description": "CLI tool to Generate TWA projects from a Web Manifest",
   "engines": {
@@ -24,13 +24,13 @@
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GoogleChromeLabs/bubblewrap.git"
+    "url": "git+https://github.com/meta-quest/bubblewrap.git"
   },
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@bubblewrap/core": "^1.24.1",
-    "@bubblewrap/validator": "^1.22.0",
+    "@meta-quest/bubblewrap-core": "^1.24.1",
+    "@meta-quest/bubblewrap-validator": "^1.22.0",
     "@types/cli-progress": "^3.7.0",
     "@types/color": "^3.0.0",
     "@types/inquirer": "^8.2.6",

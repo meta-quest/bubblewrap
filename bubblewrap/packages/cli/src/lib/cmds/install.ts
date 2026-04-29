@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-import {AndroidSdkTools, Config, JdkHelper, Log, ConsoleLog} from '@bubblewrap/core';
+import {AndroidSdkTools, Config, JdkHelper, Log, ConsoleLog} from '@meta-quest/bubblewrap-core';
 import {ParsedArgs} from 'minimist';
 
 const APK_FILE_PARAM = '--apkFile';

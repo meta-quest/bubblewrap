@@ -15,7 +15,7 @@
  */
 
 import {AndroidSdkTools, Config, GradleWrapper, JdkHelper, KeyTool, Log,
-  ConsoleLog, TwaManifest, JarSigner, SigningKeyInfo} from '@bubblewrap/core';
+  ConsoleLog, TwaManifest, JarSigner, SigningKeyInfo} from '@meta-quest/bubblewrap-core';
 import * as fs from 'fs';
 import * as path from 'path';
 import {enUS as messages} from '../strings';

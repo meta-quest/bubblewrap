@@ -21,8 +21,8 @@ import {InquirerPrompt, Prompt} from '../Prompt';
 import {enUS as messages} from '../strings';
 import {APP_NAME} from '../constants';
 import {Presets, Bar} from 'cli-progress';
-import {BufferedLog, ConsoleLog} from '@bubblewrap/core';
-import {TwaGenerator, TwaManifest} from '@bubblewrap/core';
+import {BufferedLog, ConsoleLog} from '@meta-quest/bubblewrap-core';
+import {TwaGenerator, TwaManifest} from '@meta-quest/bubblewrap-core';
 import {green} from 'colors';
 import {createValidateString, validateImageUrl} from '../inputHelpers';
 

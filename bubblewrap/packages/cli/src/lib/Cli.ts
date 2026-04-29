@@ -29,7 +29,7 @@ import {updateConfig} from './cmds/updateConfig';
 import {doctor} from './cmds/doctor';
 import {merge} from './cmds/merge';
 import {fingerprint} from './cmds/fingerprint';
-import {fetchUtils} from '@bubblewrap/core';
+import {fetchUtils} from '@meta-quest/bubblewrap-core';
 import {play, PlayArgs} from './cmds/play';
 
 export class Cli {
