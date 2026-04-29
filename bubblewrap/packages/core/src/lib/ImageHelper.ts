@@ -122,7 +122,7 @@ export class ImageHelper {
       throw new Error(`Received icon "${iconUrl}" with invalid Content-Type.` +
           ` Responded with Content-Type "${contentType}"`);
     }
-    let body = await response.arrayBuffer();
+    let body: ArrayBuffer | Buffer = await response.arrayBuffer();
     if (contentType.startsWith('image/svg')) {
       const textDecoder = new TextDecoder();
       try {
@@ -133,7 +133,7 @@ export class ImageHelper {
     }
     return {
       url: iconUrl,
-      data: await Jimp.read(Buffer.from(body)),
+      data: await Jimp.read(Buffer.from(body as ArrayBuffer)),
     };
   }
 }

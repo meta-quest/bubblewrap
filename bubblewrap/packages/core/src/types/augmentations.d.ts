@@ -25,12 +25,3 @@ declare module 'zlib' {
     close(): void;
   }
 }
-
-// Fix for tar: "Type 'Buffer' is not generic."
-// We need to make Buffer generic in the global scope to match what tar expects.
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface, @typescript-eslint/no-explicit-any
-  interface Buffer<T = any> extends Uint8Array {
-    // This merges with the existing Buffer interface and adds the generic parameter
-  }
-}
