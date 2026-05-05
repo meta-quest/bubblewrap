@@ -1,6 +1,6 @@
 FROM node:18-bullseye
 
-RUN npm install -g svg2img @bubblewrap/cli
+RUN npm install -g svg2img @meta-quest/bubblewrap-cli
 
 RUN apt update && apt install -y openjdk-11-jre openjdk-11-jdk lib32stdc++6 lib32z1
 
