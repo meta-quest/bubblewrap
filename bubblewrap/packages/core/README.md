@@ -1,5 +1,6 @@
 <!---
 
+  Copyright (c) Meta Platforms, Inc. and affiliates.
   Copyright 2019 Google Inc. All Rights Reserved.
  
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +16,9 @@
    limitations under the License.
 -->
 # Bubblewrap Core
-![Node CI Status](https://github.com/GoogleChromeLabs/bubblewrap/workflows/Node%20CI/badge.svg)
+This is a fork of the [bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) project by Google. It has been modified to allow
+creating [Trusted Web Activities (TWA)](https://developer.chrome.com/docs/android/trusted-web-activity/)
+for Meta Quest headsets.
 
 Bubblewrap Core is a NodeJS library that helps developers to create a Project for an Android
 application that launches an existing Progressive Web App (PWA) using a

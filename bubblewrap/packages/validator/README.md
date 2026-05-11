@@ -1,5 +1,6 @@
 <!---
 
+  Copyright (c) Meta Platforms, Inc. and affiliates.
   Copyright 2019 Google Inc. All Rights Reserved.
  
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +16,9 @@
    limitations under the License.
 -->
 # Bubblewrap Validator
+This is a fork of the [bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) project by Google. It has been modified to allow
+creating [Trusted Web Activities (TWA)](https://developer.chrome.com/docs/android/trusted-web-activity/)
+for Meta Quest headsets.
 
 Bubblewrap Validator is a JavaScript library that helps developers to verify if their
 [Trusted Web Activity][1] project is well formed as well as validating if the Progressive Web

@@ -1,5 +1,6 @@
 <!---
 
+  Copyright (c) Meta Platforms, Inc. and affiliates.
   Copyright 2019 Google Inc. All Rights Reserved.
  
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +16,9 @@
    limitations under the License.
 -->
 # Bubblewrap
-[![Node CI Status](https://github.com/GoogleChromeLabs/bubblewrap/workflows/Node%20CI/badge.svg)](https://github.com/GoogleChromeLabs/bubblewrap/actions?query=workflow%3A%22Node+CI%22)
+This is a fork of the [bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) project by Google. It has been modified to allow
+creating [Trusted Web Activities (TWA)](https://developer.chrome.com/docs/android/trusted-web-activity/)
+for Meta Quest headsets.
 
 Bubblewrap is a set of tools and libraries designed to help developers to create, build and update
 projects for Android Applications that launch Progressive Web App (PWA) using
