@@ -197,4 +197,26 @@ describe('inputHelpers', () => {
       expect((await inputHelpers.validateSha256Fingerprint('abc123')).isError()).toBeTrue();
     });
   });
+
+  describe('#validateHorizonAppID', () => {
+    it('Succeeds for 16-digit App IDs', async () => {
+      expect((await inputHelpers.validateHorizonAppID('1234567890123456')).isOk()).toBeTrue();
+    });
+    it('Succeeds for 17-digit App IDs', async () => {
+      expect((await inputHelpers.validateHorizonAppID('12345678901234567')).isOk()).toBeTrue();
+    });
+    it('Fails for App IDs shorter than 16 digits', async () => {
+      expect((await inputHelpers.validateHorizonAppID('123456789012345')).isError()).toBeTrue();
+    });
+    it('Fails for App IDs longer than 17 digits', async () => {
+      expect((await inputHelpers.validateHorizonAppID('123456789012345678')).isError()).toBeTrue();
+    });
+    it('Fails for empty input', async () => {
+      expect((await inputHelpers.validateHorizonAppID('')).isError()).toBeTrue();
+    });
+    it('Fails for non-numeric input', async () => {
+      expect((await inputHelpers.validateHorizonAppID('12a4567890123456')).isError()).toBeTrue();
+      expect((await inputHelpers.validateHorizonAppID('1234567890123.56')).isError()).toBeTrue();
+    });
+  });
 });

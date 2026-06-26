@@ -252,13 +252,13 @@ export async function validateInteger(input: string): Promise<Result<number, Err
 
 /**
  * A {@link ValidateFunction} that receives a {@link string} as input and validates it as a
- * Horizon App ID. The input must be exactly 16 digits.
- * @param {string} input a string representing a 16-digit HorizonOS App ID
+ * Horizon App ID. The input must be a 16- or 17-digit numeric App ID.
+ * @param {string} input a string representing a 16- or 17-digit HorizonOS App ID
  * @returns {Result<string, Error>} a result that resolves to a {@link string} on
  * success or {@link Error} on error.
  */
 export async function validateHorizonAppID(input: string): Promise<Result<string, Error>> {
-  if (!/^\d{16}$/.test(input)) {
+  if (!/^\d{16,17}$/.test(input)) {
     return Result.error(new Error(messages.errorInvalidHorizonAppID(input)));
   }
   return Result.ok(input);
