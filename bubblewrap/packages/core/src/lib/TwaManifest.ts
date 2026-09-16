@@ -237,14 +237,20 @@ export class TwaManifest {
     this.navigationDividerColorDark = new Color(data.navigationDividerColorDark ??
       DEFAULT_NAVIGATION_COLOR);
     this.backgroundColor = new Color(data.backgroundColor);
-    this.enableNotifications = data.enableNotifications;
+    // Older manifests may not have this field. It must never be left undefined, as the Gradle
+    // template interpolates it unquoted and would emit `enableNotifications: ,`.
+    this.enableNotifications = data.enableNotifications != undefined ?
+      data.enableNotifications : false;
     this.enableMicrophone = data.enableMicrophone != undefined ? data.enableMicrophone : false;
     this.enableXRScene = data.enableXRScene != undefined ? data.enableXRScene : false;
     this.startUrl = data.startUrl;
     this.iconUrl = data.iconUrl;
     this.maskableIconUrl = data.maskableIconUrl;
     this.monochromeIconUrl = data.monochromeIconUrl;
-    this.splashScreenFadeOutDuration = data.splashScreenFadeOutDuration;
+    // Older manifests may not have this field. As with `enableNotifications`, an undefined value
+    // would generate invalid Gradle.
+    this.splashScreenFadeOutDuration = data.splashScreenFadeOutDuration != undefined ?
+      data.splashScreenFadeOutDuration : DEFAULT_SPLASHSCREEN_FADEOUT_DURATION;
     this.signingKey = data.signingKey;
     this.appVersionName = data.appVersion;
     this.appVersionCode = data.appVersionCode || DEFAULT_APP_VERSION_CODE;
@@ -633,14 +639,14 @@ export interface TwaManifestJson {
   navigationDividerColor?: string;
   navigationDividerColorDark?: string;
   backgroundColor: string;
-  enableNotifications: boolean;
+  enableNotifications?: boolean; // Older Manifests may not have this field.
   enableMicrophone?: boolean; // Older Manifests may not have this field.
   enableXRScene?: boolean; // Older Manifests may not have this field.
   startUrl: string;
   iconUrl?: string;
   maskableIconUrl?: string;
   monochromeIconUrl?: string;
-  splashScreenFadeOutDuration: number;
+  splashScreenFadeOutDuration?: number; // Older Manifests may not have this field.
   signingKey: SigningKeyInfo;
   appVersionCode?: number; // Older Manifests may not have this field.
   appVersion: string; // appVersionName - Old Manifests use `appVersion`. Keeping compatibility.

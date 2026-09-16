@@ -266,8 +266,8 @@ describe('TwaManifest', () => {
       expect(twaManifest.signingKey.path).toEqual(twaManifestJson.signingKey.path);
       expect(twaManifest.signingKey.alias).toEqual(twaManifestJson.signingKey.alias);
       expect(twaManifest.splashScreenFadeOutDuration)
-          .toEqual(twaManifestJson.splashScreenFadeOutDuration);
-      expect(twaManifest.enableNotifications).toEqual(twaManifestJson.enableNotifications);
+          .toEqual(twaManifestJson.splashScreenFadeOutDuration!);
+      expect(twaManifest.enableNotifications).toEqual(twaManifestJson.enableNotifications!);
       expect(twaManifest.shortcuts)
           .toEqual([new ShortcutInfo('name', 'shortName', '/', 'icon.png')]);
       expect(twaManifest.webManifestUrl).toEqual(new URL(twaManifestJson.webManifestUrl!));
@@ -313,6 +313,54 @@ describe('TwaManifest', () => {
       expect(twaManifest.navigationColor).toEqual(new Color('#000000'));
       expect(twaManifest.navigationDividerColor).toEqual(new Color('#00000000'));
       expect(twaManifest.navigationDividerColorDark).toEqual(new Color('#000000'));
+    });
+
+    it('Defaults fields the Gradle template interpolates unquoted', () => {
+      // These fields are rendered into `app/build.gradle` without quotes, so leaving them
+      // undefined generates invalid Groovy (eg. `enableNotifications: ,`).
+      const twaManifestJson = {
+        packageId: 'com.pwa_directory.twa',
+        host: 'pwa-directory.com',
+        name: 'PWA Directory',
+        startUrl: '/',
+        iconUrl: 'https://pwa-directory.com/favicons/android-chrome-512x512.png',
+        themeColor: '#00ff00',
+        navigationColor: '#000000',
+        backgroundColor: '#0000ff',
+        appVersion: '1.0.0',
+        signingKey: {
+          path: './my-keystore',
+          alias: 'my-alias',
+        },
+      } as TwaManifestJson;
+      const twaManifest = new TwaManifest(twaManifestJson);
+      expect(twaManifest.enableNotifications).toBeFalse();
+      expect(twaManifest.splashScreenFadeOutDuration).toBe(300);
+    });
+
+    it('Round-trips fields the Gradle template interpolates unquoted', () => {
+      // `toJson()` drops undefined values when serialized, so a manifest saved by bubblewrap
+      // must carry these fields for the next `update` to generate valid Gradle.
+      const twaManifest = new TwaManifest({
+        packageId: 'com.pwa_directory.twa',
+        host: 'pwa-directory.com',
+        name: 'PWA Directory',
+        startUrl: '/',
+        iconUrl: 'https://pwa-directory.com/favicons/android-chrome-512x512.png',
+        themeColor: '#00ff00',
+        navigationColor: '#000000',
+        backgroundColor: '#0000ff',
+        appVersion: '1.0.0',
+        signingKey: {
+          path: './my-keystore',
+          alias: 'my-alias',
+        },
+      } as TwaManifestJson);
+      const savedJson = JSON.parse(JSON.stringify(twaManifest.toJson()));
+      expect(savedJson.enableNotifications).toBe(false);
+      expect(savedJson.splashScreenFadeOutDuration).toBe(300);
+      expect(savedJson.host).toBe('pwa-directory.com');
+      expect(savedJson.startUrl).toBe('/');
     });
   });
 
